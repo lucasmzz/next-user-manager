@@ -1,4 +1,5 @@
 import { NextComponentType, NextPageContext } from "next";
+import Image from "next/image";
 import type { User } from "../types";
 import { FiX } from "react-icons/fi";
 interface Props {
@@ -22,9 +23,11 @@ const UserDetails: NextComponentType<NextPageContext, {}, Props> = ({
         className="bg-white absolute w-1/5 h-1/2 flex flex-col gap-10 items-center align-start rounded-md overflow-hiddennpmn bg-opacity-80"
         onClick={(e) => e.stopPropagation()}
       >
-        <img
+        <Image
           src={user.avatar}
           alt="UserAvatar"
+          width="300"
+          height="300"
           className="w-full h-60 object-cover"
         />
         <div className="flex flex-col items-center">
