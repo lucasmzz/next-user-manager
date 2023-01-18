@@ -3,6 +3,7 @@ import type { NextPage } from "next";
 import { GetStaticProps } from "next";
 import Head from "next/head";
 import Header from "../components/Header";
+import Sidebar from "../components/Sidebar";
 import Search from "../components/Search";
 import UserList from "../components/UserList";
 import UserDetails from "../components/UserDetails";
@@ -19,13 +20,27 @@ const Users: NextPage<UsersPageProps> = ({ users }) => {
   }, [searchTerm]);
 
   const onSearchTermChange = (newTerm: string) => setSearchTerm(newTerm);
+
   const onUserSelected = (selectedUser: User) => {
     setSelectedUser(selectedUser);
     setShowUserDetails(true);
   };
+
   const onUserDetailsClose = () => {
     setSelectedUser(undefined);
     setShowUserDetails(false);
+  };
+
+  const onFavouriteStatusChange = (user: User) => {
+    setFilteredUsers(
+      filteredUsers.map((item) => {
+        if (item.id === user.id) {
+          item.isFavourite = !item.isFavourite;
+        }
+
+        return item;
+      })
+    );
   };
 
   return (
@@ -36,9 +51,14 @@ const Users: NextPage<UsersPageProps> = ({ users }) => {
       </Head>
 
       <Header />
+      <Sidebar />
       <div className="relative flex flex-col max-w-7xl mx-auto py-7">
         <Search term={searchTerm} onSearchTermChange={onSearchTermChange} />
-        <UserList users={filteredUsers} onUserSelected={onUserSelected} />
+        <UserList
+          users={filteredUsers}
+          onUserSelected={onUserSelected}
+          onFavouriteStatusChange={onFavouriteStatusChange}
+        />
       </div>
 
       {selectedUser && showUserDetails && (

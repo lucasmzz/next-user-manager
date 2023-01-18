@@ -2,15 +2,18 @@ import { useState, useEffect } from "react";
 import { NextComponentType, NextPageContext } from "next";
 import Image from "next/image";
 import type { User } from "../types";
+import { AiOutlineStar, AiFillStar, AiOutlineEye } from "react-icons/ai";
 
 interface Props {
   users: User[];
   onUserSelected: (user: User) => void;
+  onFavouriteStatusChange: (user: User) => void;
 }
 
 const UserList: NextComponentType<NextPageContext, {}, Props> = ({
   users,
   onUserSelected,
+  onFavouriteStatusChange,
 }) => {
   const [paginatedList, setPaginatedList] = useState<Array<User[]>>([]);
   const [pageNumbers, setPageNumbers] = useState<number[]>([]);
@@ -49,8 +52,7 @@ const UserList: NextComponentType<NextPageContext, {}, Props> = ({
           return (
             <div
               key={user.name}
-              className="flex justify-between items-center pr-3 border cursor-pointer transition duration-150 ease-in-out hover:bg-gray-100"
-              onClick={() => onUserSelected(user)}
+              className="flex justify-between items-center pr-3 border transition duration-150 ease-in-out hover:bg-gray-100"
             >
               <div className="flex gap-2 items-center">
                 <Image
@@ -62,7 +64,34 @@ const UserList: NextComponentType<NextPageContext, {}, Props> = ({
                 />
                 <p>{user.name}</p>
               </div>
-              <p>{formattedDate}</p>
+              <div className="flex justify-between items-center gap-2">
+                <p className="bg-gray-200 p-2 w-10 text-center rounded-md">
+                  {user.posts}
+                </p>
+                <p>{formattedDate}</p>
+                <span>
+                  <a
+                    className={`cursor-pointer ${
+                      user.isFavourite && "text-yellow-500"
+                    }`}
+                    onClick={() => onFavouriteStatusChange(user)}
+                  >
+                    <i>
+                      {user.isFavourite ? <AiFillStar /> : <AiOutlineStar />}
+                    </i>
+                  </a>
+                </span>
+                <span>
+                  <a
+                    className={`text-xl font-medium cursor-pointer hover:text-blue-700 hover:font-bold transition duration-150 ease-in-out`}
+                    onClick={() => onUserSelected(user)}
+                  >
+                    <i>
+                      <AiOutlineEye />
+                    </i>
+                  </a>
+                </span>
+              </div>
             </div>
           );
         })}

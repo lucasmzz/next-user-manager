@@ -3,6 +3,8 @@ export interface User {
   name: string;
   avatar: string;
   createdAt: string;
+  posts: number;
+  isFavourite: boolean;
 }
 
 export interface UsersPageProps {
