@@ -14,10 +14,23 @@ const Users: NextPage<UsersPageProps> = ({ users }) => {
   const [filteredUsers, setFilteredUsers] = useState<User[]>([]);
   const [selectedUser, setSelectedUser] = useState<User | undefined>(undefined);
   const [showUserDetails, setShowUserDetails] = useState<Boolean>(false);
+  const [filterFavourites, setFilterFavourites] = useState(false);
 
   useEffect(() => {
-    setFilteredUsers(users.filter((user) => user.name.includes(searchTerm)));
-  }, [searchTerm]);
+    setFilteredUsers(
+      users.filter((user) => {
+        if (user.name.includes(searchTerm)) {
+          if (filterFavourites) {
+            if (user.isFavourite) {
+              return user;
+            }
+          } else {
+            return user;
+          }
+        }
+      })
+    );
+  }, [searchTerm, filterFavourites]);
 
   const onSearchTermChange = (newTerm: string) => setSearchTerm(newTerm);
 
@@ -29,6 +42,10 @@ const Users: NextPage<UsersPageProps> = ({ users }) => {
   const onUserDetailsClose = () => {
     setSelectedUser(undefined);
     setShowUserDetails(false);
+  };
+
+  const onFilterFavouritesChange = (status: boolean) => {
+    setFilterFavourites(status);
   };
 
   const onFavouriteStatusChange = (user: User) => {
@@ -53,7 +70,12 @@ const Users: NextPage<UsersPageProps> = ({ users }) => {
       <Header />
       <Sidebar />
       <div className="relative flex flex-col max-w-7xl mx-auto py-7">
-        <Search term={searchTerm} onSearchTermChange={onSearchTermChange} />
+        <Search
+          term={searchTerm}
+          onSearchTermChange={onSearchTermChange}
+          onFilterFavouritesChange={onFilterFavouritesChange}
+          filterFavourites={filterFavourites}
+        />
         <UserList
           users={filteredUsers}
           onUserSelected={onUserSelected}
